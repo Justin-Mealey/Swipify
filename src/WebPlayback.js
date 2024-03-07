@@ -126,10 +126,40 @@ export default function WebPlayback(props) {
             case 'next':
                 player.nextTrack();
                 break;
+            case 'undo':
+                // Implement undo functionality or map to a suitable alternative
+                break;
             default:
                 break;
         }
     };
+
+    useEffect(() => {
+        // Define handleKeyPress inside useEffect or after handleClick if handleClick is outside useEffect
+        const handleKeyPress = (event) => {
+            console.log(event.key); // Add this line to log the key that's being pressed
+            switch (event.key) {
+                case 'ArrowRight':
+                    handleClick('next', current_track);
+                    break;
+                case 'ArrowLeft':
+                    handleClick('undo', current_track); // Ensure this maps correctly to your intended function
+                    break;
+                case 'Backspace':
+                    handleClick('previous', current_track);
+                    break;
+                case ' ':
+                    event.preventDefault();
+                    handleClick('toggle', current_track);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [current_track, handleClick]); // handleClick dependency is now valid
 
     if (!is_active || !gotTracks || !current_track) {
         return <div className="loading">Loading...</div>;
