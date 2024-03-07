@@ -137,6 +137,7 @@ export default function WebPlayback(props) {
     useEffect(() => {
         // Define handleKeyPress inside useEffect or after handleClick if handleClick is outside useEffect
         const handleKeyPress = (event) => {
+            console.log(event.key); // Add this line to log the key that's being pressed
             switch (event.key) {
                 case 'ArrowRight':
                     handleClick('next', current_track);
@@ -144,7 +145,7 @@ export default function WebPlayback(props) {
                 case 'ArrowLeft':
                     handleClick('undo', current_track); // Ensure this maps correctly to your intended function
                     break;
-                case 'Delete':
+                case 'Backspace':
                     handleClick('previous', current_track);
                     break;
                 case ' ':
