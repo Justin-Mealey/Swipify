@@ -13,7 +13,7 @@ function Login() {
 <div class="container">
   <div class="center">
     <h1 class="big-title">Swipe in to Swipify</h1>
-    <button class="login-button" onclick='http://localhost:8000/login'>Login with Spotify</button>
+    <a class="login-button" href='http://localhost:8000/login'>Login with Spotify</a>
   </div>
 </div>
     </>
