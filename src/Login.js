@@ -1,14 +1,24 @@
 import React from 'react';
 
-export default function Login() {
+function Login() {
     return (
-        <div className="App">
-            <header className="App-header">
-                <a className="btn-spotify" href='http://localhost:8000/login'>
-                    Login with Spotify
-                </a>
-            </header>
-        </div>
+        <>
+<title>Swipify</title>
+<div class="top-bar">
+  <div class="small-title">
+    <h2>Swipify &#9835;</h2>
+  </div>
+</div>
+
+<div class="container">
+  <div class="center">
+    <h1 class="big-title">Swipe in to Swipify</h1>
+    <button class="login-button" onclick='http://localhost:8000/login'>Login with Spotify</button>
+  </div>
+</div>
+    </>
     );
 }
+
+export default Login;
 
