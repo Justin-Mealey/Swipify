@@ -10,9 +10,7 @@ export default function Swipescreen({ token }) {
     const { state } = useLocation();
     const { playlist_id, name } = state;
     const [tracks, setTracks] = useState([null]);
-    const [tracksToRemove, setTracksToRemove] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [trackCounter, setTrackCounter] = useState(0);
 
     useEffect(() => {
         async function getTracks(playlist_id) {
@@ -35,7 +33,7 @@ export default function Swipescreen({ token }) {
     return (
         <div className="screen-container">
             <div className="swipe-screen">
-                {<WebPlayback token={token} track_list={tracks.map(item => item.track)} playlist_name={name} />}
+                {<WebPlayback token={token} track_list={tracks.map(item => item.track)} playlist_name={name} playlist_id={playlist_id} />}
             </div>
         </div>
     );

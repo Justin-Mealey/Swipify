@@ -27,7 +27,9 @@ export default function WebPlayback(props) {
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState(null);
     const [gotTracks, setGotTracks] = useState(false);
-    console.log("Tracks", props.track_list);
+    const [tracksToRemove, setTracksToRemove] = useState([]);
+    const [deletionStatus, setDeletionStatus] = useState("");
+    // console.log("Tracks", props.track_list);
 
 
     useEffect(() => {
@@ -114,25 +116,55 @@ export default function WebPlayback(props) {
         setTrack(props.track_list[0]);
     }, [deviceId, props.token]);
 
-    const handleClick = (action, current_track) => {
+    const handleClick = (action) => {
         if (!player) return;
         switch (action) {
-            case 'previous':
-                player.previousTrack();
-                break;
-            case 'toggle':
-                player.togglePlay();
-                break;
-            case 'next':
+            case 'remove':
+                let updatedTrackToRemove = [...tracksToRemove];
+                updatedTrackToRemove.push(current_track);
+                setTracksToRemove(updatedTrackToRemove);
+            case 'keep':
                 player.nextTrack();
                 break;
             case 'undo':
-                // Implement undo functionality or map to a suitable alternative
+                player.previousTrack();
+                // implement functional undo button stuff
+                break;
+            case 'toggle':
+                player.togglePlay();
                 break;
             default:
                 break;
         }
     };
+
+
+    const confirmDelete = () => {
+
+        let ids_to_remove = tracksToRemove.map((track) => track.id);
+        console.log(ids_to_remove);
+        // ids_to_remove = [];
+
+        setDeletionStatus("Deleting...");
+        
+        async function del_tracks(){
+            console.log('happened')
+            const response = await fetch('http://localhost:8000/remove_tracks?' + new URLSearchParams({
+                playlist_id: props.playlist_id,
+                track_ids: ids_to_remove
+            }), {method: 'DELETE'});
+            console.log(response)
+            return response;
+        }
+
+        let response = del_tracks();
+        console.log(response);
+
+        
+
+        
+        setDeletionStatus("Changes confirmed.");
+    }
 
     useEffect(() => {
         // Define handleKeyPress inside useEffect or after handleClick if handleClick is outside useEffect
@@ -140,17 +172,17 @@ export default function WebPlayback(props) {
             console.log(event.key); // Add this line to log the key that's being pressed
             switch (event.key) {
                 case 'ArrowRight':
-                    handleClick('next', current_track);
+                    handleClick('next');
                     break;
                 case 'ArrowLeft':
-                    handleClick('undo', current_track); // Ensure this maps correctly to your intended function
+                    handleClick('undo'); // Ensure this maps correctly to your intended function
                     break;
                 case 'Backspace':
-                    handleClick('previous', current_track);
+                    handleClick('previous');
                     break;
                 case ' ':
                     event.preventDefault();
-                    handleClick('toggle', current_track);
+                    handleClick('toggle');
                     break;
                 default:
                     break;
@@ -175,20 +207,22 @@ export default function WebPlayback(props) {
                     <div className="playlist-name">{props.playlist_name}</div>
                     <img src={current_track?.album?.images[0]?.url} className="album-img" alt="" />
                     <div className="now-playing">
-                        <div className="now-playing__name">{current_track?.name}</div>
+                        <div className="now-playing__name">{current_track?.name}   {current_track?.id}</div>
                         <div className="now-playing__artist">{current_track?.artists[0]?.name}</div>
-                        <button className="spotify-btn" onClick={() => handleClick('previous', current_track)}>
+                        <button className="spotify-btn" onClick={() => handleClick('remove')}>
                             <i className="fas fa-trash"></i> {/* Replace "Remove" with a trash icon */}
                         </button>
-                        <button className='spotify-btn' onClick={() => handleClick('undo', current_track)}>
+                        <button className='spotify-btn' onClick={() => handleClick('undo')}>
                             <i className="fas fa-undo"></i> {/* Replace "Undo" with a backwards arrow */}
                         </button>
-                        <button className="spotify-btn" onClick={() => handleClick('toggle', current_track)}>
+                        <button className="spotify-btn" onClick={() => handleClick('toggle')}>
                             {is_paused ? <i className="fas fa-play"></i> : <i className="fas fa-pause"></i>} {/* Play or Pause icon depending on is_paused */}
                         </button>
-                        <button className="spotify-btn" onClick={() => handleClick('next', current_track)}>
+                        <button className="spotify-btn" onClick={() => handleClick('keep')}>
                             <i className="fas fa-arrow-right"></i> {/* Replace "Keep" with a right arrow */}
                         </button>
+
+                        <button className='spotify-btn' onClick={confirmDelete}>DELETE</button>
                     </div>
                 </div>
             </div>
