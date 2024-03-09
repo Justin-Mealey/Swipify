@@ -199,6 +199,24 @@ export default function WebPlayback(props) {
 
     return (
         <>
+        <div className='sidebar'>
+            <div className='deleted-tracks-list'>
+                <h2>Deleted Tracks</h2>
+                {tracksToRemove.map((item, index) => (
+                    <div key={index} className="deleted-track">
+                        <div className="track-container">
+                            <button className="remove-track-btn"> 
+                                x
+                            </button>
+                            <span>{item.name} - {item.artists[0].name}</span>
+                        </div>
+                    </div>
+                ))}
+                {tracksToRemove.length > 0 && (
+                    <button className='confirm-btn' onClick={confirmDelete}>Confirm</button>
+                )}           
+                </div>
+        </div>
             <select>
             {props.track_list.map((item) => <option>{item.name}</option>)}
             </select>
@@ -210,19 +228,17 @@ export default function WebPlayback(props) {
                         <div className="now-playing__name">{current_track?.name}   {current_track?.id}</div>
                         <div className="now-playing__artist">{current_track?.artists[0]?.name}</div>
                         <button className="spotify-btn" onClick={() => handleClick('remove')}>
-                            <i className="fas fa-trash"></i> {/* Replace "Remove" with a trash icon */}
+                            <i className="fas fa-trash"></i> 
                         </button>
                         <button className='spotify-btn' onClick={() => handleClick('undo')}>
-                            <i className="fas fa-undo"></i> {/* Replace "Undo" with a backwards arrow */}
+                            <i className="fas fa-undo"></i> 
                         </button>
                         <button className="spotify-btn" onClick={() => handleClick('toggle')}>
-                            {is_paused ? <i className="fas fa-play"></i> : <i className="fas fa-pause"></i>} {/* Play or Pause icon depending on is_paused */}
+                            {is_paused ? <i className="fas fa-play"></i> : <i className="fas fa-pause"></i>}
                         </button>
                         <button className="spotify-btn" onClick={() => handleClick('keep')}>
-                            <i className="fas fa-arrow-right"></i> {/* Replace "Keep" with a right arrow */}
+                            <i className="fas fa-arrow-right"></i> 
                         </button>
-
-                        <button className='spotify-btn' onClick={confirmDelete}>DELETE</button>
                     </div>
                 </div>
             </div>
