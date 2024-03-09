@@ -66,4 +66,39 @@ html, body, #root {
     font-family: 'Montserrat', sans-serif;
 
 }
-  
+
+.artistlist{
+    max-width: 300px; /* Limit the width of the select bar */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+    white-space: nowrap; /* Prevent text from wrapping to new lines */
+    position: absolute; /* Use absolute positioning */
+    top: 250px; /* Position near top to avoid overlapping main content */
+    right: 100px; /* Keep it on the right for large screens */
+    z-index: 1000; /* Ensure it sits above other content */
+    padding: 0.75rem 1rem; /* Increase padding for a larger appearance */
+    border-radius: 8px; /* Rounded corners for aesthetics */
+    background-color: #1ED760; /* Background color */
+    color: white; /* Text color */
+    font-weight: bold; /* Bold font */
+    transition-property: transform, background-color;
+    transform: translateY(-50%); /* Adjust vertical position */
+}
+
+.footer { 
+    max-width: 300px; /* Limit the width of the select bar */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+    white-space: nowrap; /* Prevent text from wrapping to new lines */
+    position: absolute; /* Use absolute positioning */
+    top: 400px; /* Position near top to avoid overlapping main content */
+    right: 100px; /* Keep it on the right for large screens */
+    z-index: 1000; /* Ensure it sits above other content */
+    padding: 0.75rem 1rem; /* Increase padding for a larger appearance */
+    border-radius: 8px; /* Rounded corners for aesthetics */
+    background-color: #1ED760; /* Background color */
+    color: white; /* Text color */
+    font-weight: bold; /* Bold font */
+    transition-property: transform, background-color;
+    transform: translateY(-50%); /* Adjust vertical position */
+}
