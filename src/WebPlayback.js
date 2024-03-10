@@ -29,6 +29,8 @@ export default function WebPlayback(props) {
     const [gotTracks, setGotTracks] = useState(false);
     const [tracksToRemove, setTracksToRemove] = useState([]);
     const [deletionStatus, setDeletionStatus] = useState("");
+    const [counter, setCounter] = useState(0);
+    const num_tracks = props.track_list.length;
     // console.log("Tracks", props.track_list);
 
 
@@ -121,14 +123,27 @@ export default function WebPlayback(props) {
         switch (action) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
+                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track.id){
+                    break;
+                }
                 updatedTrackToRemove.push(current_track);
                 setTracksToRemove(updatedTrackToRemove);
             case 'keep':
                 player.nextTrack();
+                setCounter(counter + 1);
                 break;
             case 'undo':
-                player.previousTrack();
-                // implement functional undo button stuff
+                {
+                player.previousTrack();                
+                let updatedTrackToRemove = [...tracksToRemove];
+                let recentlyRemoved = updatedTrackToRemove.pop();
+
+                if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id){
+                    setTracksToRemove(updatedTrackToRemove);
+                }
+
+                setCounter(counter - 1);
+                }
                 break;
             case 'toggle':
                 player.togglePlay();
@@ -138,31 +153,20 @@ export default function WebPlayback(props) {
         }
     };
 
-
-    const confirmDelete = () => {
-
-        let ids_to_remove = tracksToRemove.map((track) => track.id);
-        console.log(ids_to_remove);
-        // ids_to_remove = [];
+    
+    const confirmDelete = async () => {
+        // DELETED 
 
         setDeletionStatus("Deleting...");
         
-        async function del_tracks(){
-            console.log('happened')
-            const response = await fetch('http://localhost:8000/remove_tracks?' + new URLSearchParams({
-                playlist_id: props.playlist_id,
-                track_ids: ids_to_remove
-            }), {method: 'DELETE'});
-            console.log(response)
-            return response;
-        }
+        let ids_to_remove = tracksToRemove.map((track) => track.id);
+        console.log('happened')
+        const response = await fetch('http://localhost:8000/remove_tracks?' + new URLSearchParams({
+            playlist_id: props.playlist_id,
+            track_ids: ids_to_remove
+        }), {method: 'DELETE'});        
 
-        let response = del_tracks();
-        console.log(response);
-
-        
-
-        
+        setTracksToRemove([]);
         setDeletionStatus("Changes confirmed.");
     }
 
@@ -205,17 +209,20 @@ export default function WebPlayback(props) {
                 {tracksToRemove.map((item, index) => (
                     <div key={index} className="deleted-track">
                         <div className="track-container">
-                            <button className="remove-track-btn"> 
+                            {/* <button className="remove-track-btn"> 
                                 x
-                            </button>
+                            </button> */}
                             <span>{item.name} - {item.artists[0].name}</span>
                         </div>
                     </div>
                 ))}
                 {tracksToRemove.length > 0 && (
                     <button className='confirm-btn' onClick={confirmDelete}>Confirm</button>
-                )}           
+                )}
                 </div>
+            <div>
+                {deletionStatus}
+            </div>
         </div>
             <select>
             {props.track_list.map((item) => <option>{item.name}</option>)}
@@ -225,7 +232,7 @@ export default function WebPlayback(props) {
                     <div className="playlist-name">{props.playlist_name}</div>
                     <img src={current_track?.album?.images[0]?.url} className="album-img" alt="" />
                     <div className="now-playing">
-                        <div className="now-playing__name">{current_track?.name}   {current_track?.id}</div>
+                        <div className="now-playing__name">{current_track?.name}</div>
                         <div className="now-playing__artist">{current_track?.artists[0]?.name}</div>
                         <button className="spotify-btn" onClick={() => handleClick('remove')}>
                             <i className="fas fa-trash"></i> 
@@ -239,9 +246,58 @@ export default function WebPlayback(props) {
                         <button className="spotify-btn" onClick={() => handleClick('keep')}>
                             <i className="fas fa-arrow-right"></i> 
                         </button>
+                        <ProgressBar current={counter} total={num_tracks}/>
+
                     </div>
                 </div>
             </div>
         </>
     );
-}
+};
+
+
+const ProgressBar = (props) => {
+    let { current, total } = props;
+    current > total ? current = total : null; 
+    let percent = (current) / total * 100;
+
+    const containerStyles = {
+        border: 'solid',
+        height: 20,
+        width: '100%',
+        backgroundColor: "#212121",
+        margin: '50px 0px',
+        borderRadius: 20,
+        borderColor : '#f0f8ff',
+    }
+
+    const fillerStyles = {
+        height: '100%',
+        width: `${percent}%`,
+        backgroundColor: '#f0f8ff',
+        textAlign: 'right',
+        borderRadius: 'inherit'
+    }
+
+    const labelStyles = {
+        padding: 5,
+        color: '#212121',
+        fontWeight: 'bold'
+    }
+
+    const noAlign = {
+        textAlign : 'left',
+        width: '100%',
+        margin: 5
+    }
+
+    return (
+        <div style={containerStyles}>
+        <div style={fillerStyles}>
+            <span style={labelStyles}>{`${percent}%`}</span>
+        </div>
+        <div style={noAlign} className='deleted-tracks-list'>Progress: {current} / {total}</div>
+        </div>
+    );
+};
+
