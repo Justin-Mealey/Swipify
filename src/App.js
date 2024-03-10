@@ -21,6 +21,12 @@ export default function App() {
 
     }, []);
 
+    //check for token
+    //if token
+    //useNavigate(login page)
+
+    //also check for every instance of fetch('http://localhost:8000/auth/token');
+
     return (
         <div className="App">
             <Routes>

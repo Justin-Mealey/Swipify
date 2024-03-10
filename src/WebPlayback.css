@@ -7,6 +7,32 @@
     text-align: center;
 }
 
+.sidebar {
+    position: fixed;
+    left: 20px;
+    top: 10px;
+    width: 20%;
+    height: 90%;
+    overflow-y: auto; /* Allows scrolling if the list gets too long */
+    padding: 20px;
+    box-sizing: border-box; /* Ensures padding does not add to the width */
+}
+
+.deleted-tracks-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.deleted-track {
+    padding: 5px 0; /* Adjust based on your design */
+}
+.main-wrapper {
+    flex: 3; /* Adjust based on your layout preferences */
+    padding: 20px;
+}
+
 .album-img {
     /* border-radius: 9%; */
     width: 300px; /* Adjust the width as needed */
@@ -17,6 +43,7 @@
 }
 
 .playlist-name {
+    margin-bottom: 10px;
     margin-top: 350px;
     font-size: 1.5em;
     font-weight: bold;
@@ -60,11 +87,62 @@
     background-color: #21e065;
 }
 
+.spotify-btn:active {
+    background-color: #18a64a;
+}
+
+.confirm-btn {
+    padding: 1rem 3rem;
+    border-radius: 9999px;
+    background-color: #1ED760;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transform-origin: center;
+    transition-property: transform, background-color;
+    transition-duration: 0.2s;
+    border: none;
+    margin: 0 5px;
+    margin-top: 30px;
+}
+
+.confirm-btn:hover {
+    transform: scale(1.05);
+    background-color: #21e065;
+}
+
+.confirm-btn:active {
+    background-color: #18a64a;
+}
+
+.track-container {
+    display: flex;
+    align-items: center; /* This will vertically center the items in the container */
+}
+
+.remove-track-btn {
+    background-color: transparent;
+    border: none;
+    color: #696868; /* Dark color for the "x" */
+    cursor: pointer;
+    font-size: 16px; /* Adjust if necessary */
+    padding: 0 5px;
+    display: inline-flex; /* Use flex to center align the content */
+    align-items: center; /* Align the "x" vertically */
+    justify-content: center; /* Center the "x" horizontally */
+    margin-right: 10px; /* Space before the track name */
+    height: 20px; /* Specify a height for the button */
+    width: 20px; /* Specify a width for the button */
+}
+
+/* Optional: Add a subtle hover effect */
+.remove-track-btn:hover {
+    color: #111; /* Slightly lighter dark color on hover */
+}
 
 /* Style for the dropdown */
 select {
-
-
     max-width: 300px; /* Limit the width of the select bar */
     overflow: hidden; /* Prevent text from overflowing */
     text-overflow: ellipsis; /* Add ellipsis for overflowed text */
