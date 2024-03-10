@@ -78,3 +78,40 @@ body { /*#131413 */
     cursor: pointer; 
     transition: all 0.3s ease; 
   }
+
+.login-button:hover {
+    background-color: lightgreen; 
+    transform: scale(1.05); 
+    filter: brightness(100%);
+  }
+
+  .input-container {
+    display: grid;
+    grid-template-columns: 1fr; 
+    grid-gap: 10px;
+    align-items: center; 
+    justify-content: center; 
+    /*margin-top: 20px; */
+    text-align: left; 
+  }
+
+  .input-container input {
+    width: 70%;
+    height: 30px;
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #f2f2f2;
+    transition: all 0.3s ease;
+    color: black;
+  }
+
+  .input-container input:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+
+  .input-label {
+    font-size: 0.8em;
+    color: white;
+  }
