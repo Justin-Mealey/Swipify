@@ -38,3 +38,43 @@ body { /*#131413 */
     width: 100%; 
   }
 
+.small-title {
+    font-size: 1em; 
+    display: inline-block; 
+  }
+
+  .center {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .big-title {
+    font-size: 2.5em; 
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .big-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 80%;
+    height: 2px;
+    background-color: white;
+    transform: translateX(-50%);
+  }
+
+  .login-button {
+    background-color: #1DB954; 
+    border: none;
+    color: white; 
+    padding: 10px 20px; 
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+  }
