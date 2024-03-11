@@ -176,13 +176,13 @@ export default function WebPlayback(props) {
             console.log(event.key); // Add this line to log the key that's being pressed
             switch (event.key) {
                 case 'ArrowRight':
-                    handleClick('next');
+                    handleClick('keep');
                     break;
                 case 'ArrowLeft':
-                    handleClick('undo'); // Ensure this maps correctly to your intended function
+                    handleClick('undo'); 
                     break;
                 case 'Backspace':
-                    handleClick('previous');
+                    handleClick('remove');
                     break;
                 case ' ':
                     event.preventDefault();
