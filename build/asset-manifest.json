@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/christiandsol/Swipify/static/css/main.fa099301.css",
+    "main.js": "/christiandsol/Swipify/static/js/main.d706fa50.js",
+    "index.html": "/christiandsol/Swipify/index.html",
+    "main.fa099301.css.map": "/christiandsol/Swipify/static/css/main.fa099301.css.map",
+    "main.d706fa50.js.map": "/christiandsol/Swipify/static/js/main.d706fa50.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fa099301.css",
+    "static/js/main.d706fa50.js"
+  ]
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import WebPlayback from './WebPlayback'
+import WebPlayback from './WebPlayback.js'
 import { useLocation } from 'react-router-dom'
 
 

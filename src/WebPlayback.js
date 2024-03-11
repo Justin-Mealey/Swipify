@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WebPlayback.css';
-import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer';
+import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.js';
 
 const track = {
     name: "",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Home from './Home'
-import Swipescreen from './Swipescreen'
+import Home from './Home.js'
+import Swipescreen from './Swipescreen.js'
 import { Routes, Route } from 'react-router-dom'
 
 

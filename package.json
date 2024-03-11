@@ -1,29 +1,49 @@
 {
-  "name": "react.dev",
-  "version": "0.0.0",
-  "main": "/src/index.js",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "",
-    "eject": "react-scripts eject"
-  },
-  "dependencies": {
-    "react": "^17.2.0",
-    "react-dom": "^17.2.0",
-    "react-router-dom": "^6.22.1",
-    "react-scripts": "^5.0.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "Swipify",
+    "author": "Christian Solano",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "jest",
+        "server": "node server.js",
+        "eject": "react-scripts eject",
+        "dev": "run-p start server"
+    },
+    "dependencies": {
+        "axios": "^1.6.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.1",
+        "express": "^4.18.2",
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0",
+        "react-router-dom": "^6.4.0",
+        "react-scripts": "^5.0.0"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/christiandsol/Swipify.git"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/christiandsol/Swipify/issues"
+    },
+    "homepage": "https://localhose:3000",
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
+    }
 }

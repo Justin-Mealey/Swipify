@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import Playlist from './Playlist'
+import Playlist from './Playlist.js'
 
 export default function WelcomeScreen(){
     const [playlists, setPlaylists] = useState([{name: "Loading...", id : ""}]);

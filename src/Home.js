@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react';
-import Login from './Login'
-import WelcomeScreen from './WelcomeScreen'
+import Login from './Login.js'
+import WelcomeScreen from './WelcomeScreen.js'
 
 export default function Home(){
     const [token, setToken] = useState('');
