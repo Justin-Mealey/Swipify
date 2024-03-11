@@ -138,10 +138,13 @@ export default function WebPlayback(props) {
                 let updatedTrackToRemove = [...tracksToRemove];
                 let recentlyRemoved = updatedTrackToRemove.pop();
 
-                if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id){
+                if (counter > 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id){
                     setTracksToRemove(updatedTrackToRemove);
                 }
 
+                if (counter <= 0) { //cannot undo at the start
+                    break;
+                }
                 setCounter(counter - 1);
                 }
                 break;
