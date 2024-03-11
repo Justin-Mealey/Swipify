@@ -33,7 +33,6 @@ export default function WebPlayback(props) {
     const num_tracks = props.track_list.length;
     // console.log("Tracks", props.track_list);
 
-
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -96,7 +95,7 @@ export default function WebPlayback(props) {
         }
     }, [deviceId])
 
-    useEffect( () => {
+    useEffect(() => {
         const track_uris = props.track_list.map(track => track.uri);
         if (deviceId) {
             fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -123,7 +122,7 @@ export default function WebPlayback(props) {
         switch (action) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
-                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track?.id){
+                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track?.id) {
                     break;
                 }
                 updatedTrackToRemove.push(current_track);
@@ -134,15 +133,15 @@ export default function WebPlayback(props) {
                 break;
             case 'undo':
                 {
-                player.previousTrack();                
-                let updatedTrackToRemove = [...tracksToRemove];
-                let recentlyRemoved = updatedTrackToRemove.pop();
+                    player.previousTrack();
+                    let updatedTrackToRemove = [...tracksToRemove];
+                    let recentlyRemoved = updatedTrackToRemove.pop();
 
-                if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id){
-                    setTracksToRemove(updatedTrackToRemove);
-                }
+                    if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
+                        setTracksToRemove(updatedTrackToRemove);
+                    }
 
-                setCounter(counter - 1);
+                    setCounter(counter - 1);
                 }
                 break;
             case 'toggle':
@@ -153,18 +152,18 @@ export default function WebPlayback(props) {
         }
     };
 
-    
+
     const confirmDelete = async () => {
         // DELETED 
 
         setDeletionStatus("Deleting...");
-        
+
         let ids_to_remove = tracksToRemove.map((track) => track.id);
         console.log('happened')
         const response = await fetch('http://localhost:8000/remove_tracks?' + new URLSearchParams({
             playlist_id: props.playlist_id,
             track_ids: ids_to_remove
-        }), {method: 'DELETE'});        
+        }), { method: 'DELETE' });
 
         setTracksToRemove([]);
         setDeletionStatus("Changes confirmed.");
@@ -179,7 +178,7 @@ export default function WebPlayback(props) {
                     handleClick('keep');
                     break;
                 case 'ArrowLeft':
-                    handleClick('undo'); 
+                    handleClick('undo');
                     break;
                 case 'Backspace':
                     handleClick('remove');
@@ -203,29 +202,29 @@ export default function WebPlayback(props) {
 
     return (
         <>
-        <div className='sidebar'>
-            <div className='deleted-tracks-list'>
-                <h2>Deleted Tracks</h2>
-                {tracksToRemove.map((item, index) => (
-                    <div key={index} className="deleted-track">
-                        <div className="track-container">
-                            {/* <button className="remove-track-btn"> 
+            <div className='sidebar'>
+                <div className='deleted-tracks-list'>
+                    <h2>Deleted Tracks</h2>
+                    {tracksToRemove.map((item, index) => (
+                        <div key={index} className="deleted-track">
+                            <div className="track-container">
+                                {/* <button className="remove-track-btn"> 
                                 x
                             </button> */}
-                            <span>{item.name} - {item.artists[0].name}</span>
+                                <span>{item.name} - {item.artists[0].name}</span>
+                            </div>
                         </div>
-                    </div>
-                ))}
-                {tracksToRemove.length > 0 && (
-                    <button className='confirm-btn' onClick={confirmDelete}>Confirm</button>
-                )}
+                    ))}
+                    {tracksToRemove.length > 0 && (
+                        <button className='confirm-btn' onClick={confirmDelete}>Confirm</button>
+                    )}
                 </div>
-            <div>
-                {deletionStatus}
+                <div>
+                    {deletionStatus}
+                </div>
             </div>
-        </div>
             <select>
-            {props.track_list.map((item) => <option key={item.id}>{item.name}</option>)}
+                {props.track_list.map((item) => <option key={item.id}>{item.name}</option>)}
             </select>
             <div className="container">
                 <div className="main-wrapper">
@@ -235,18 +234,18 @@ export default function WebPlayback(props) {
                         <div className="now-playing__name">{current_track?.name}</div>
                         <div className="now-playing__artist">{current_track?.artists[0]?.name}</div>
                         <button className="spotify-btn" onClick={() => handleClick('remove')}>
-                            <i className="fas fa-trash"></i> 
+                            <i className="fas fa-trash"></i>
                         </button>
                         <button className='spotify-btn' onClick={() => handleClick('undo')}>
-                            <i className="fas fa-undo"></i> 
+                            <i className="fas fa-undo"></i>
                         </button>
                         <button className="spotify-btn" onClick={() => handleClick('toggle')}>
                             {is_paused ? <i className="fas fa-play"></i> : <i className="fas fa-pause"></i>}
                         </button>
                         <button className="spotify-btn" onClick={() => handleClick('keep')}>
-                            <i className="fas fa-arrow-right"></i> 
+                            <i className="fas fa-arrow-right"></i>
                         </button>
-                        <ProgressBar current={counter} total={num_tracks}/>
+                        <ProgressBar current={counter} total={num_tracks} />
 
                     </div>
                 </div>
@@ -258,7 +257,7 @@ export default function WebPlayback(props) {
 
 const ProgressBar = (props) => {
     let { current, total } = props;
-    current > total ? current = total : null; 
+    current > total ? current = total : null;
     let percent = (current) / total * 100;
 
     const containerStyles = {
@@ -268,7 +267,7 @@ const ProgressBar = (props) => {
         backgroundColor: "#212121",
         margin: '50px 0px',
         borderRadius: 20,
-        borderColor : '#f0f8ff',
+        borderColor: '#f0f8ff',
     }
 
     const fillerStyles = {
@@ -286,17 +285,17 @@ const ProgressBar = (props) => {
     }
 
     const noAlign = {
-        textAlign : 'left',
+        textAlign: 'left',
         width: '100%',
         margin: 5
     }
 
     return (
         <div style={containerStyles}>
-        <div style={fillerStyles}>
-            <span style={labelStyles}>{`${percent}%`}</span>
-        </div>
-        <div style={noAlign} className='deleted-tracks-list'>Progress: {current} / {total}</div>
+            <div style={fillerStyles}>
+                <span style={labelStyles}>{`${percent}%`}</span>
+            </div>
+            <div style={noAlign} className='deleted-tracks-list'>Progress: {current} / {total}</div>
         </div>
     );
 };
