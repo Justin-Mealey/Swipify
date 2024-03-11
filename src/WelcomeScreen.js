@@ -21,7 +21,7 @@ export default function WelcomeScreen(){
   }, []);
 
     let listItems = playlists.map((playlist) => 
-        <li>
+        <li key={playlist.id}>
             <Playlist name={playlist.name} id={playlist.id} images={playlist.images}/>
         </li>
     )

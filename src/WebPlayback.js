@@ -96,7 +96,7 @@ export default function WebPlayback(props) {
         }
     }, [deviceId])
 
-    useEffect(() => {
+    useEffect( () => {
         const track_uris = props.track_list.map(track => track.uri);
         if (deviceId) {
             fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -123,7 +123,7 @@ export default function WebPlayback(props) {
         switch (action) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
-                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track.id){
+                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track?.id){
                     break;
                 }
                 updatedTrackToRemove.push(current_track);
@@ -225,7 +225,7 @@ export default function WebPlayback(props) {
             </div>
         </div>
             <select>
-            {props.track_list.map((item) => <option>{item.name}</option>)}
+            {props.track_list.map((item) => <option key={item.id}>{item.name}</option>)}
             </select>
             <div className="container">
                 <div className="main-wrapper">
