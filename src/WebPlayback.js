@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WebPlayback.css';
+import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer';
 
 const track = {
     name: "",
@@ -31,91 +32,35 @@ export default function WebPlayback(props) {
     const [deletionStatus, setDeletionStatus] = useState("");
     const [counter, setCounter] = useState(0);
     const num_tracks = props.track_list.length;
-    // console.log("Tracks", props.track_list);
 
     useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
-
-        document.body.appendChild(script);
-
-        window.onSpotifyWebPlaybackSDKReady = () => {
-            const player = new window.Spotify.Player({
-                name: 'Swipify',
-                getOAuthToken: cb => { cb(props.token); },
-                volume: 0.5
-            });
-            setPlayer(player);
-            player.addListener('ready', ({ device_id }) => {
-                console.log('Ready with Device ID', device_id);
-                setDeviceId(device_id);
-            });
-
-            player.addListener('not_ready', ({ device_id }) => {
-                console.log('Device ID has gone offline', device_id);
-            });
-
-            player.addListener('player_state_changed', (state => {
-
-                if (!state) {
-                    return;
-                }
-                setTrack(state.track_window.current_track);
-                setPaused(state.paused);
-
-                player.getCurrentState().then(state => {
-                    (!state) ? setActive(false) : setActive(true)
-                });
-
-            }));
-            player.connect();
-        };
+        if (player) {
+            return;
+        }
+        pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused);
     }, [props.token]);
-
     // This function transfers active playback to the Spotify session in the browser
     useEffect(() => {
-        async function transferPlayback() {
-            await fetch('https://api.spotify.com/v1/me/player', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + props.token
-                },
-                body: JSON.stringify({
-                    device_ids: [
-                        deviceId
-                    ],
-                    play: true
-                })
-            });
-        }
-        if (deviceId) {
-            transferPlayback();
-        }
+        transferPlayback(props, deviceId);
     }, [deviceId])
-
     useEffect(() => {
-        const track_uris = props.track_list.map(track => track.uri);
-        if (deviceId) {
-            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${props.token}`
-                },
-                body: JSON.stringify({
-                    uris: track_uris,
-                    offset: { position: 0 }
-                })
-            })
-                .then(response => response.json())
-                .then(data => console.log('Playing playlist:', data))
-                .catch(error => console.error('Error playing playlist:', error));
-        }
-        setGotTracks(true);
-        setTrack(props.track_list[0]);
+        play_playlist(props, setGotTracks, setTrack, deviceId);
     }, [deviceId, props.token]);
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (player) {
+                player.disconnect();
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        // Cleanup function to remove event listener
+        return () => {
+            handleBeforeUnload();
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [player]);
 
     const handleClick = (action) => {
         if (!player) return;
@@ -127,8 +72,10 @@ export default function WebPlayback(props) {
                 }
                 updatedTrackToRemove.push(current_track);
                 setTracksToRemove(updatedTrackToRemove);
+                break;
             case 'keep':
                 player.nextTrack();
+                console.log("Counter ", counter);
                 setCounter(counter + 1);
                 break;
             case 'undo':
@@ -136,12 +83,13 @@ export default function WebPlayback(props) {
                     player.previousTrack();
                     let updatedTrackToRemove = [...tracksToRemove];
                     let recentlyRemoved = updatedTrackToRemove.pop();
-
-                    if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
-                        setTracksToRemove(updatedTrackToRemove);
+                    if (props.track_list[(counter - 1) % num_tracks]) {
+                        if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
+                            setTracksToRemove(updatedTrackToRemove);
+                        }
+                        setCounter(counter - 1);
                     }
 
-                    setCounter(counter - 1);
                 }
                 break;
             case 'toggle':
@@ -159,7 +107,6 @@ export default function WebPlayback(props) {
         setDeletionStatus("Deleting...");
 
         let ids_to_remove = tracksToRemove.map((track) => track.id);
-        console.log('happened')
         const response = await fetch('http://localhost:8000/remove_tracks?' + new URLSearchParams({
             playlist_id: props.playlist_id,
             track_ids: ids_to_remove
@@ -172,7 +119,6 @@ export default function WebPlayback(props) {
     useEffect(() => {
         // Define handleKeyPress inside useEffect or after handleClick if handleClick is outside useEffect
         const handleKeyPress = (event) => {
-            console.log(event.key); // Add this line to log the key that's being pressed
             switch (event.key) {
                 case 'ArrowRight':
                     handleClick('keep');
@@ -195,6 +141,8 @@ export default function WebPlayback(props) {
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [current_track, handleClick]); // handleClick dependency is now valid
+
+    console.log("Tracks ", props.track_list);
 
     if (!is_active || !gotTracks || !current_track) {
         return <div className="loading">Loading...</div>;
