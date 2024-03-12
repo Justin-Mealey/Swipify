@@ -37,15 +37,18 @@ export default function WebPlayback(props) {
         if (player) {
             return;
         }
-        pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused);
+        pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused, setCounter);
     }, [props.token]);
+
     // This function transfers active playback to the Spotify session in the browser
     useEffect(() => {
         transferPlayback(props, deviceId);
     }, [deviceId])
+
     useEffect(() => {
         play_playlist(props, setGotTracks, setTrack, deviceId);
     }, [deviceId, props.token]);
+
     useEffect(() => {
         const handleBeforeUnload = () => {
             if (player) {
@@ -68,36 +71,28 @@ export default function WebPlayback(props) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
                 if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track?.id) {
+                    // Prevent from attempting to delete same song twice. 
                     break;
                 }
                 updatedTrackToRemove.push(current_track);
                 setTracksToRemove(updatedTrackToRemove);
-                break;
+                // intentional fallthrough
             case 'keep':
                 player.nextTrack();
                 console.log("Counter ", counter);
-                setCounter(counter + 1);
                 break;
             case 'undo':
                 {
-                    player.previousTrack();
+                    if (counter < 1) break;
+                    
                     let updatedTrackToRemove = [...tracksToRemove];
-                    let recentlyRemoved = updatedTrackToRemove.pop();
-                    if (props.track_list[(counter - 1) % num_tracks]) {
-                        if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
-                            setTracksToRemove(updatedTrackToRemove);
-                        }
-                        setCounter(counter - 1);
-                    }
+                    const recentlyRemoved = updatedTrackToRemove.pop();
 
-                    if (counter > 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
+                    if (props.track_list[(counter - 1) % num_tracks] && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
                         setTracksToRemove(updatedTrackToRemove);
                     }
 
-                    if (counter <= 0) { //cannot undo at the start
-                        break;
-                    }
-                    setCounter(counter - 1);
+                    player.previousTrack();
                 }
                 break;
             case 'toggle':
@@ -122,6 +117,15 @@ export default function WebPlayback(props) {
 
         setTracksToRemove([]);
         setDeletionStatus("Changes confirmed.");
+    }
+
+    const playSong = async (track_id) => {
+        const response = await fetch('http://localhost:8000/play_song?'+ new URLSearchParams({
+            'id' : track_id
+        }), { method: 'PUT' });
+        if (response){
+            console.log(response);
+        }
     }
 
     useEffect(() => {
@@ -249,7 +253,7 @@ const ProgressBar = (props) => {
     return (
         <div style={containerStyles}>
             <div style={fillerStyles}>
-                <span style={labelStyles}>{`${percent}%`}</span>
+                <span style={labelStyles}>{/* {`${percent}%`} */}</span>
             </div>
             <div style={noAlign} className='deleted-tracks-list'>Progress: {current} / {total}</div>
         </div>

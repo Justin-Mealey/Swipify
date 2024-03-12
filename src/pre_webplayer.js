@@ -1,4 +1,4 @@
-export const pre_webplayer = async (props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused) => {
+export const pre_webplayer = async (props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused, setCounter) => {
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
@@ -24,7 +24,11 @@ export const pre_webplayer = async (props, player, setPlayer, setTrack, setActiv
             if (!state) {
                 return;
             }
-            setTrack(state.track_window.current_track);
+            const current_track = state.track_window.current_track;
+            const ids = props.track_list.map((track) => track.id);
+
+            setTrack(current_track);
+            setCounter(ids.indexOf(current_track.id));
             setPaused(state.paused);
 
             player.getCurrentState().then(state => {
