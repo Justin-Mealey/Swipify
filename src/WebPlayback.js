@@ -60,51 +60,39 @@ export default function WebPlayback(props) {
             handleBeforeUnload();
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [player]);
+    }, []);
 
     const handleClick = (action) => {
         if (!player) return;
         switch (action) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
-                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track?.id) {
+                if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track.id) {
                     break;
                 }
                 updatedTrackToRemove.push(current_track);
                 setTracksToRemove(updatedTrackToRemove);
-                break;
             case 'keep':
                 player.nextTrack();
-                console.log("Counter ", counter);
                 setCounter(counter + 1);
                 break;
             case 'undo':
+                player.previousTrack();
+                // implement functional undo button stuff
                 {
                     player.previousTrack();
                     let updatedTrackToRemove = [...tracksToRemove];
                     let recentlyRemoved = updatedTrackToRemove.pop();
-                    if (props.track_list[(counter - 1) % num_tracks]) {
-                        if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
-                            setTracksToRemove(updatedTrackToRemove);
-                        }
-                        setCounter(counter - 1);
-                    }
 
-                    if (counter > 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
+                    if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
                         setTracksToRemove(updatedTrackToRemove);
                     }
 
-                    if (counter <= 0) { //cannot undo at the start
-                        break;
-                    }
                     setCounter(counter - 1);
                 }
                 break;
             case 'toggle':
                 player.togglePlay();
-                break;
-            default:
-                break;
         }
     };
 
