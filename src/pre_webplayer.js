@@ -1,4 +1,4 @@
-export const pre_webplayer = async (props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused, setCounter) => {
+export const pre_webplayer = async (props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused) => {
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
@@ -28,7 +28,6 @@ export const pre_webplayer = async (props, player, setPlayer, setTrack, setActiv
             const ids = props.track_list.map((track) => track.id);
 
             setTrack(current_track);
-            setCounter(ids.indexOf(current_track.id));
             setPaused(state.paused);
 
             player.getCurrentState().then(state => {
@@ -62,7 +61,7 @@ export const transferPlayback = async (props, deviceId) => {
 export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => {
     const track_uris = props.track_list.map(track => track.uri);
     if (deviceId) {
-        await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=false?device_id=${deviceId}`, {
+        await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +77,7 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => 
             .catch(error => console.error('Error playing playlist:', error));
     }
     if (deviceId) {
-        await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+        await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=false?device_id=${deviceId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -89,9 +88,9 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => 
                 offset: { position: 0 }
             })
         })
-            .then(response => response.json())
-            .then(data => console.log('Playing playlist:', data))
-            .catch(error => console.error('Error playing playlist:', error));
+        .then(response => response.json())
+        .then(data => console.log('Playing playlist:', data))
+        .catch(error => console.error('Error playing playlist:', error));
     }
     setGotTracks(true);
     setTrack(props.track_list[0]);
