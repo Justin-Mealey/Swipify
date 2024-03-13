@@ -4,6 +4,10 @@
     height: 2000px;
   }
 
+  .center{
+    top: 35%;
+  }
+
   body.end-reached {
     background-image: #000000;
   }
@@ -48,9 +52,10 @@
   }
 
   .login-button {
-    background-color: #1DB954; 
+    background-color: #1ED760; 
     border: none;
-    color: white; 
+    color: black; 
+    font-weight: bold;
     padding: 10px 20px; 
     text-align: center;
     text-decoration: none;
@@ -62,16 +67,15 @@
   }
 
 .login-button:hover {
-    background-color: lightgreen; 
-    transform: scale(1.05); 
-    filter: brightness(100%);
-  }
+  transform: scale(1.05);
+  background-color: #21e065;
+}
 
   .input-container {
     display: grid;
     grid-template-columns: 1fr; 
     grid-gap: 10px;
-    align-items: center; 
+    align-items: start; 
     justify-content: center; 
     text-align: left; 
   }
@@ -89,7 +93,8 @@
   }
 
   .input-container input:hover {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    transform: scale(1.05);
+    background-color: #21e065;
   }
 
   .input-label {
