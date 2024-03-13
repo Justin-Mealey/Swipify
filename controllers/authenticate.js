@@ -195,8 +195,9 @@ async function get_playlists() {
         playlists = playlists.concat(response.data.items);
         queryString = response.data.next;
     }
-
-    PLAYLIST_DATA =  playlists.filter((playlist) => playlist.owner.id == USER_ID);
+    
+    let user_owned = playlists.filter((playlist) => playlist.owner.id == USER_ID);
+    PLAYLIST_DATA =  user_owned.filter((playlist) => playlist.tracks.total > 0);
     return PLAYLIST_DATA;
 }
 
