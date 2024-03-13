@@ -62,6 +62,22 @@ export const transferPlayback = async (props, deviceId) => {
 export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => {
     const track_uris = props.track_list.map(track => track.uri);
     if (deviceId) {
+        await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=false?device_id=${deviceId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${props.token}`
+            },
+            body: JSON.stringify({
+                uris: track_uris,
+                offset: { position: 0 }
+            })
+        })
+            .then(response => response.json())
+            .then(data => console.log('Playing playlist:', data))
+            .catch(error => console.error('Error playing playlist:', error));
+    }
+    if (deviceId) {
         await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: 'PUT',
             headers: {
