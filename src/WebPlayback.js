@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './WebPlayback.css';
 import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.js';
+import TopBar from './TopBar.js'; // Adjust the import path based on your file structure
+
 
 const track = {
     name: "",
@@ -162,6 +164,7 @@ export default function WebPlayback(props) {
 
     return (
         <>
+            <TopBar/>
             <div className='sidebar'>
                 <div className='deleted-tracks-list'>
                     <h2>Deleted Tracks</h2>

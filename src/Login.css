@@ -1,11 +1,4 @@
-body { /*#131413 */
-    background: linear-gradient(rgba(76, 175, 80) 0%, rgb(0, 0, 0) 100%); 
-    background-attachment: fixed;
-    color: white;
-    font-family: Arial, sans-serif; 
-    margin: 0;
-    padding: 0;
-  }
+
 
   .content {
     height: 2000px;
@@ -15,32 +8,21 @@ body { /*#131413 */
     background-image: #000000;
   }
 
-  .container {
-    background-color: black; 
-    color: white; 
-    padding: 40px; 
-    position: absolute; 
-    top: 50%;
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    text-align: center;
-    border-radius: 10px;
-    width: 400px; 
-  }
-
   .top-bar {
     background-color: #000000; 
-    padding: 10px 20px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); 
+    padding: 20px 20px; 
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); 
     position: absolute; 
     top: 0; 
     left: 0; 
     width: 100%; 
+    box-sizing: border-box; /* Include padding in the element's width */
   }
 
-.small-title {
-    font-size: 1em; 
-    display: inline-block; 
+  .small-title h2 {
+    font-size: 2em;
+    margin: 0;
+    padding: 0 0 0 30px; /* Add padding on the left to push text to the right */
   }
 
   .center {
@@ -91,7 +73,6 @@ body { /*#131413 */
     grid-gap: 10px;
     align-items: center; 
     justify-content: center; 
-    /*margin-top: 20px; */
     text-align: left; 
   }
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import Playlist from './Playlist.js'
+import TopBar from './TopBar.js'; // Adjust the import path based on your file structure
+
 
 export default function WelcomeScreen(){
     const [playlists, setPlaylists] = useState([{name: "Loading...", id : ""}]);
@@ -28,7 +30,7 @@ export default function WelcomeScreen(){
 
     return (
         <>
-            <div className="Title"><b>SWIPIFY</b></div>
+            <TopBar/>
             <div className="subheading">SELECT. SWIPE. SAVE.</div>
             <ul className='playlist-grid'>
                 {listItems}
