@@ -1,4 +1,10 @@
 # Setup
+## Requirements
+Spotify Premium
+Spotify Developer Dashboard
+Latest react version
+
+## Getting the App
 
 github link: https://github.com/christiandsol/Swipify
 
@@ -6,30 +12,26 @@ github link: https://github.com/christiandsol/Swipify
 git clone https://github.com/christiandsol/Swipify
 ```
 From here, go into the directory that you cloned. 
-For code to be able to run, you will need to run npm install and create a .env file in your root directory with:
-```
-REDIRECT_URI = 'http://localhost:8000/callback'
-CLIENT_SECRET = ''
-CLIENT_ID = ''
-ACCESS_TOKEN = ''
-REFRESH_TOKEN = ''
-USER_ID = null
-```
-You will need to fill your CLIENT SECRET and CLIENT ID with what is provided when you create an app on the spotify developer dashboard.
+For code to be able to run, you will need to run npm install and create a .env file in your root directory.
+You will need to fill your CLIENT SECRET and CLIENT ID with what is provided when you create an app on the spotify developer dashboard. 
+This step is necessary for convenience, the only other way to do it would be for us to give every user of our application developer access. You will be able to create a 
+spotify API account here https://developer.spotify.com/documentation/web-api at the top right corner after signing into your account. Then clicking on the top right again going to 
+dashboard. From here you will create your application with a name and (IMPORTANT) the redirect URI being http://localhost:8000/callback
+
 REDIRECT_URI can be however you set it. For ease of use purposes, you can use 
 ```
 REDIRECT_URI = http://localhost:8000/callback
-CLIENT_SECRET = 4ec32e4ce4c1478293324b3362550857
+CLIENT_SECRET = REPLACE_WITH_YOUR_CLIENT_SECRET 
 BASE_URL = https://api.spotify.com/v1
 AUTH_URL = https://accounts.spotify.com/authorize
-CLIENT_ID = 002f6e5dac5345d1be58e8aba4fb585f
+CLIENT_ID = REPLACE_WITH_YOUR_CLIENT_ID 
 ACCESS_TOKEN = '' 
 REFRESH_TOKEN = '' 
 USER_ID = null
 ```
 
-
 After including all these files, run npm install
+
 ```
 npm install
 ```
