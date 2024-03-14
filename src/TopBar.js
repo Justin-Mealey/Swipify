@@ -6,7 +6,7 @@ function TopBar() {
   return (
     <div className="top-bar">
       <div className="small-title">
-        <h2>Swipify &#9835;</h2>
+        <a className='small-title' href="http://localhost:3000">Swipify &#9835;</a>
       </div>
     </div>
   );

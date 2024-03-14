@@ -1,10 +1,9 @@
 import querystring from 'querystring';
-import axios from 'axios'
-import dotenv from 'dotenv'
-// import { Z_DEFAULT_COMPRESSION } from 'zlib';
-dotenv.config()
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
-//initialization
+// Initialization
 const REDIRECT_URI = process.env.REDIRECT_URI; 
 const CLIENT_SECRET = process.env.CLIENT_SECRET;  
 const CLIENT_ID = process.env.CLIENT_ID; 
@@ -14,9 +13,11 @@ let USER_ID = process.env.USER_ID;
 let PLAYLIST_DATA;
 
 export const control_login_authorize = function(req, res) {
-  const state = '798873302492668522416472228';
-  var scope = 'user-read-private user-read-email streaming playlist-modify-private playlist-modify-public playlist-read-private';
-  var redirectUrl = 'https://accounts.spotify.com/authorize?' +
+    // Authorizes the user with the spotify api when they login with spotify. 
+
+    const state = '798873302492668522416472228';
+    var scope = 'user-read-private user-read-email streaming playlist-modify-private playlist-modify-public playlist-read-private';
+    var redirectUrl = 'https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
       client_id: CLIENT_ID,
@@ -29,6 +30,8 @@ export const control_login_authorize = function(req, res) {
 
 
 export const control_login_callback = async function(req, res) {
+    // After authorization, update backend data and redirect user to main page of app. 
+
     const code = req.query.code || null;
     const state = req.query.state || null;
     const storedState = req.query.state || null;
@@ -59,6 +62,8 @@ export const control_login_callback = async function(req, res) {
 };
 
 export async function getProfile(access_token) {
+    // Gets profile data from spotify api. 
+
     const response = await axios.get('https://api.spotify.com/v1/me', {
         headers: {
             'Authorization': 'Bearer ' + access_token
@@ -69,6 +74,8 @@ export async function getProfile(access_token) {
 }
 
 export const obtain_tokens = async (req, res) => {
+    // Retrieves access tokens and refresh tokens from api and updates backend values. 
+
     const code = req.query.code || null;
     const state = req.query.state || null;
     const storedState = req.query.state || null;
@@ -100,29 +107,16 @@ export const obtain_tokens = async (req, res) => {
 }
 
 export const get_token = async (req,res) => {
+    // Gets current user access token from backend. 
+
     console.log('Access token: ', ACCESS_TOKEN);
     res.json({
         access_token: ACCESS_TOKEN
     });
 }
 
-export const new_playlist= async (req, res) => {
-    // PROB NOT NEEDED
-
-    const response = await axios.post(`https://api.spotify.com/v1/users/${USER_ID}/playlists`, {
-        name: 'New Playlist',
-        public: false
-    }, {
-        headers: {
-        'Authorization': 'Bearer ' + ACCESS_TOKEN,
-        'Content-Type': 'application/json'
-        }
-    });
-    console.log('Response: ', response.data);
-    res.send('New playlist created');
-} 
-
 export const playlists = async (req, res) => {
+    // Function to be called from frontend to get all playlists. 
 
     try{
         let playlists = await get_playlists();
@@ -135,6 +129,7 @@ export const playlists = async (req, res) => {
 }
 
 export const tracks = async (req, res) => {
+    // Function to be called from frontend to get tracks from playlist. 
 
     try{
         let playlist_id = req.query.playlist_id;
@@ -147,6 +142,8 @@ export const tracks = async (req, res) => {
 }
 
 export const remove_tracks = async (req, res) => {
+    // Function to be called from frontend to remove tracks from playlist. 
+
     try{
         let idsToDelete = req.query.track_ids.split(',');
         let playlist_id = req.query.playlist_id;
@@ -158,27 +155,15 @@ export const remove_tracks = async (req, res) => {
     }
 }
 
-export const test = async (req, res) => {
-    try{
-        // let x = await get_tracks_and_artists_from_playlist('0A0X9EeB29iwpAd7Pat5Ae');
-        let tracks = await get_tracks_from_playlist('0A0X9EeB29iwpAd7Pat5Ae');
-        sort_tracks_by_artist(tracks, null);
-        res.send('test complete');
-    }catch (error){
-        res.send(error);
-        console.log(error);
-    }
-}
 
 /*
-BEGIN API ACCESS FUNCTIONS
+BEGIN API PLAYLIST EDITING FUNCTIONS
 */
 
 
 async function get_playlists() {
     // Returns a full list of playlist objects owned by the user, and sets global variable PLAYLIST_DATA.
     
-
     let playlists = [];
     let queryString = 'https://api.spotify.com/v1/me/playlists';
 
@@ -232,6 +217,9 @@ async function remove_tracks_from_playlist(playlist_id, trackids_to_remove){
     // trackids_to_remove = ['2FDTHlrBguDzQkp7PVj16Q', '0GAyuCo975IHGxxiLKDufB'];
     // playlist_id = '60uTaRX0ZDG5tSW3PCYBVL';
 
+    // Removes list of trackids from playlist by calling web api, and then updates 
+    // the playlists data, including snapshot_id to allow further track removal. 
+
     let tracks_to_remove = trackids_to_remove.map((track_id) => ({"uri" : "spotify:track:" + track_id}));
 
 
@@ -246,63 +234,6 @@ async function remove_tracks_from_playlist(playlist_id, trackids_to_remove){
             'snapshot_id': playlist.snapshot_id
     }});
 
-    await get_playlists();  //call get playlists again to update playlist data
-
+    await get_playlists();  
     return response;
 }
-
-/* Track Object:
-
-    {
-  added_at: '2022-04-11T01:37:02Z',
-  added_by: {
-    external_urls: { spotify: 'https://open.spotify.com/user/justinrm16' },
-    href: 'https://api.spotify.com/v1/users/justinrm16',
-    id: 'justinrm16',
-    type: 'user',
-    uri: 'spotify:user:justinrm16'
-  },
-  is_local: false,
-  primary_color: null,
-  track: {
-    preview_url: 'https://p.scdn.co/mp3-preview/3dd55d0ccc147f9a655048af71275a345ad54c7f?cid=002f6e5dac5345d1be58e8aba4fb585f',
-    is_playable: true,
-    explicit: true,
-    type: 'track',
-    episode: false,
-    track: true,
-    album: {
-      is_playable: true,
-      type: 'album',
-      album_type: 'album',
-      href: 'https://api.spotify.com/v1/albums/0zicd2mBV8HTzSubByj4vP',
-      id: '0zicd2mBV8HTzSubByj4vP',
-      images: [Array],
-      name: 'Luv Is Rage 2 (Deluxe)',
-      release_date: '2017-11-17',
-      release_date_precision: 'day',
-      uri: 'spotify:album:0zicd2mBV8HTzSubByj4vP',
-      artists: [Array],
-      external_urls: [Object],
-      total_tracks: 20
-    },
-    artists: [ [Object] ],
-    disc_number: 1,
-    track_number: 20,
-    duration_ms: 220586,
-    external_ids: { isrc: 'USAT21704166' },
-    external_urls: {
-      spotify: 'https://open.spotify.com/track/0uxSUdBrJy9Un0EYoBowng'
-    },
-    href: 'https://api.spotify.com/v1/tracks/0uxSUdBrJy9Un0EYoBowng',
-    id: '0uxSUdBrJy9Un0EYoBowng',
-    name: '20 Min',
-    popularity: 85,
-    uri: 'spotify:track:0uxSUdBrJy9Un0EYoBowng',
-    is_local: false
-  },
-  video_thumbnail: { url: null }
-}
-
-
-*/

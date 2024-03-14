@@ -23,10 +23,13 @@
     box-sizing: border-box; /* Include padding in the element's width */
   }
 
-  .small-title h2 {
-    font-size: 2em;
+  .small-title {
+    font-size: 1.5em;
+    font-weight: bold;
     margin: 0;
     padding: 0 0 0 30px; /* Add padding on the left to push text to the right */
+    color: white;
+    text-decoration: none;
   }
 
   .center {
