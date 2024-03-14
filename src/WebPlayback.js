@@ -24,7 +24,7 @@ export default function WebPlayback(props) {
     const [deletionStatus, setDeletionStatus] = useState("");
     const [counter, setCounter] = useState(0);
     const num_tracks = props.track_list.length;
-
+    //initialize counter to 0
     useEffect(() => {
         setCounter(0);
     }, [props.track_list]);
@@ -37,7 +37,7 @@ export default function WebPlayback(props) {
             }
         }
     }, [props.track_list]);
-
+    //disconnect the player when the component is unmounted, and pasue player when left
     useEffect(() => {
         // Function to pause the Spotify player
         console.log("player", player);
@@ -59,14 +59,15 @@ export default function WebPlayback(props) {
             }
         };
     }, [player, props.track_list]);
-
+    //transfer the user playback
     useEffect(() => {
         transferPlayback(props, deviceId);
     }, [deviceId, props.track_list])
+    //play the playlist from the counter
     useEffect(() => {
         play_playlist(props, setGotTracks, setTrack, deviceId, counter, setPaused, is_paused);
     }, [deviceId, props.token, props.track_list]);
-
+    //handle button functionality
     const handleClick = (action) => {
         if (!player) return;
         switch (action) {
@@ -107,7 +108,7 @@ export default function WebPlayback(props) {
         }
     };
 
-
+    //confirm deletion
     const confirmDelete = async () => {
         // DELETED 
 
@@ -122,7 +123,7 @@ export default function WebPlayback(props) {
         setTracksToRemove([]);
         setDeletionStatus("Changes confirmed.");
     }
-
+    //Add keypress functionality
     useEffect(() => {
         // Define handleKeyPress inside useEffect or after handleClick if handleClick is outside useEffect
         const handleKeyPress = (event) => {
@@ -148,7 +149,7 @@ export default function WebPlayback(props) {
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [current_track, handleClick]); // handleClick dependency is now valid
-
+    //handle the selection form the dropdown
     const handleSelection = (selectedValue) => {
         const selectedIndex = props.track_list.findIndex(track => track.id === selectedValue);
         console.log("Here");
