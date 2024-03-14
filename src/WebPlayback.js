@@ -34,7 +34,7 @@ export default function WebPlayback(props) {
         console.log("player", player);
         const pausePlayer = () => {
             if (player) {
-                player.pause()
+                player.pause();
                 console.log('Playback paused');
             }
         };
@@ -55,7 +55,7 @@ export default function WebPlayback(props) {
         transferPlayback(props, deviceId);
     }, [deviceId])
     useEffect(() => {
-        play_playlist(props, setGotTracks, setTrack, deviceId);
+        play_playlist(props, setGotTracks, setTrack, deviceId, counter, setPaused, is_paused);
     }, [deviceId, props.token]);
 
     const handleClick = (action) => {
@@ -63,31 +63,34 @@ export default function WebPlayback(props) {
         switch (action) {
             case 'remove':
                 let updatedTrackToRemove = [...tracksToRemove];
+                console.log(tracksToRemove[tracksToRemove.length - 1]?.id == current_track.id);
                 if (tracksToRemove[tracksToRemove.length - 1]?.id == current_track.id) {
                     break;
                 }
                 updatedTrackToRemove.push(current_track);
                 setTracksToRemove(updatedTrackToRemove);
             case 'keep':
-                player.nextTrack();
-                setCounter(counter + 1);
-                setTrack(props.track_list[(counter + 1) % num_tracks]);
+                setCounter(prevCounter => prevCounter + 1);
+                play_playlist(props, setGotTracks, setTrack, deviceId, (counter + 1) % num_tracks, setPaused, is_paused);
                 break;
             case 'undo':
-                player.previousTrack();
                 // implement functional undo button stuff
                 {
-                    player.previousTrack();
+                    if (counter == 0) {
+                        break;
+                    }
+                    play_playlist(props, setGotTracks, setTrack, deviceId, (counter - 1) % num_tracks, setPaused, is_paused);
                     let updatedTrackToRemove = [...tracksToRemove];
                     let recentlyRemoved = updatedTrackToRemove.pop();
 
-                    if (counter >= 0 && props.track_list[(counter - 1) % num_tracks].id == recentlyRemoved?.id) {
+                    if (counter >= 0 && props.track_list[(counter - 1) % num_tracks]?.id == recentlyRemoved?.id) {
                         setTracksToRemove(updatedTrackToRemove);
                     }
-
-                    setCounter(counter - 1);
+                    if (counter > 0) {
+                        setCounter(prevCounter => prevCounter - 1);
+                    }
+                    break; // <- Add this break statement
                 }
-                break;
             case 'toggle':
                 is_paused ? player.resume() : player.pause();
                 setPaused(!is_paused);
@@ -137,6 +140,14 @@ export default function WebPlayback(props) {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [current_track, handleClick]); // handleClick dependency is now valid
 
+    const handleSelection = (selectedValue) => {
+        const selectedIndex = props.track_list.findIndex(track => track.id === selectedValue);
+        console.log("Here");
+        setCounter(selectedIndex);
+        play_playlist(props, setGotTracks, setTrack, deviceId, selectedIndex, setPaused, is_paused);
+    }
+
+
 
     if (!is_active || !gotTracks || !current_track) {
         return <div className="loading">Loading...</div>;
@@ -165,9 +176,14 @@ export default function WebPlayback(props) {
                     {deletionStatus}
                 </div>
             </div>
-            <select>
-                {props.track_list.map((item) => <option key={item.id}>{item.name}</option>)}
+            <select onChange={(event) => handleSelection(event.target.value)}>
+                {props.track_list.map((item) => (
+                    <option key={item.id} value={item.id}>
+                        {item.name}
+                    </option>
+                ))}
             </select>
+
             <div className="container">
                 <div className="main-wrapper">
                     <div className="playlist-name">{props.playlist_name}</div>

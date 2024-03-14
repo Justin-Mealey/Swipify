@@ -53,8 +53,10 @@ export const transferPlayback = async (props, deviceId) => {
     console.log("second");
 }
 
-export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => {
+export const play_playlist = async (props, setGotTracks, setTrack, deviceId, counter, setPaused, is_paused) => {
     const track_uris = props.track_list.map(track => track.uri);
+    console.log("counter", counter);
+    console.log("track_uris", track_uris);
     if (deviceId) {
         await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: 'PUT',
@@ -64,7 +66,7 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => 
                 'Accept': 'application/json',
             },
             body: JSON.stringify({
-                uris: track_uris,
+                uris: [track_uris[counter]],
                 offset: { position: 0 },
             }),
         })
@@ -72,8 +74,10 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => 
             .then(data => console.log('Playing playlist:', data))
             .catch(error => console.error('Error playing playlist:', error));
     }
+    console.log("Current track ", props.track_list[counter]);
     setGotTracks(true);
-    setTrack(props.track_list[0]);
+    setTrack(props.track_list[counter]);
+    setPaused(false);
     console.log("third");
 }
 
