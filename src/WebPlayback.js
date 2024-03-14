@@ -156,8 +156,6 @@ export default function WebPlayback(props) {
         play_playlist(props, setGotTracks, setTrack, deviceId, selectedIndex, setPaused, is_paused);
     }
 
-
-
     if (!is_active || !gotTracks || !current_track) {
         return <Spinner />;
     }
@@ -186,13 +184,22 @@ export default function WebPlayback(props) {
                     {deletionStatus}
                 </div>
             </div>
-            <select onChange={(event) => handleSelection(event.target.value)}>
-                {props.track_list.map((item) => (
-                    <option key={item.id} value={item.id}>
-                        {item.name}
-                    </option>
-                ))}
-            </select>
+            
+            <div className='right-sidebar'>
+                <div className='tracks-heading'>
+                    <h2 className='right-align' >Tracks</h2>
+                    <select className="tracks-dropdown" onChange={(event) => handleSelection(event.target.value)}>
+                        {props.track_list.map((item) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className='artists-heading'>
+                    <h2 className='right-align'>Artists</h2>
+                    {/* Place the ArtistDropdown component here once it's ready */}
+                    {/* Example: <ArtistDropdown artists={props.artists} /> */}
+                </div>
+            </div>
 
             <div className="container">
                 <div className="main-wrapper">
@@ -263,7 +270,7 @@ const ProgressBar = (props) => {
     return (
         <div style={containerStyles}>
             <div style={fillerStyles}>
-                <span style={labelStyles}>{`${percent}%`}</span>
+                <span style={labelStyles}></span>
             </div>
             <div style={noAlign} className='deleted-tracks-list'>Progress: {current} / {total}</div>
         </div>
