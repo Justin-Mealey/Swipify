@@ -3,8 +3,8 @@ import './Login.css';
 import TopBar from './TopBar.js';
 
 function Login() {
-    return (
-        <>
+    return ( //Display the login title and the login button which uses href to specify the link (Spotify)
+        <> 
             <TopBar/>
             <div className="container">
                 <div className="center">
