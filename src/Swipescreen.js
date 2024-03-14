@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import WebPlayback from './WebPlayback.js'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import Spinner from './Spinner.js'
 
 
 
@@ -39,7 +40,7 @@ export default function Swipescreen({ token }) {
 
     }, [token]);
     if (loading) {
-        return <div>Loading...</div>;
+        return <Spinner />;
     }
 
     function handleFilter(filtered_tracks) {
