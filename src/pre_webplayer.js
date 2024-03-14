@@ -58,7 +58,7 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId, cou
     console.log("counter", counter);
     console.log("track_uris", track_uris);
     if (deviceId) {
-        await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+        const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,8 +66,8 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId, cou
                 'Accept': 'application/json',
             },
             body: JSON.stringify({
-                uris: [track_uris[counter]],
-                offset: { position: 0 },
+                'uris': [track_uris[counter]],
+                'offset': { position: 0 },
             }),
         })
             .then(response => response.json())

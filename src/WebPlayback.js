@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './WebPlayback.css';
 import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.js';
+import Spinner from './Spinner.js';
 
 
 
@@ -12,7 +13,6 @@ import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.
  * to play the playlist in the browser. 
  */
 export default function WebPlayback(props) {
-    const isMounted = useRef(true); // Ref to keep track of component mount state
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [player, setPlayer] = useState(undefined);
@@ -23,18 +23,26 @@ export default function WebPlayback(props) {
     const [deletionStatus, setDeletionStatus] = useState("");
     const [counter, setCounter] = useState(0);
     const num_tracks = props.track_list.length;
+
+    useEffect(() => {
+        setCounter(0);
+    }, [props.track_list]);
     useEffect(() => {
         // Initialize Spotify player here
         pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused);
-
-    }, []);
+        return () => {
+            if (player) {
+                player.disconnect();
+            }
+        }
+    }, [props.track_list]);
 
     useEffect(() => {
         // Function to pause the Spotify player
         console.log("player", player);
         const pausePlayer = () => {
             if (player) {
-                player.pause();
+                player.disconnect();
                 console.log('Playback paused');
             }
         };
@@ -49,14 +57,14 @@ export default function WebPlayback(props) {
                 player.pause();
             }
         };
-    }, [player]);
+    }, [player, props.track_list]);
 
     useEffect(() => {
         transferPlayback(props, deviceId);
-    }, [deviceId])
+    }, [deviceId, props.track_list])
     useEffect(() => {
         play_playlist(props, setGotTracks, setTrack, deviceId, counter, setPaused, is_paused);
-    }, [deviceId, props.token]);
+    }, [deviceId, props.token, props.track_list]);
 
     const handleClick = (action) => {
         if (!player) return;
@@ -150,7 +158,7 @@ export default function WebPlayback(props) {
 
 
     if (!is_active || !gotTracks || !current_track) {
-        return <div className="loading">Loading...</div>;
+        return <Spinner />;
     }
 
     return (
