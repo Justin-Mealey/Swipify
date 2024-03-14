@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import WebPlayback from './WebPlayback.js'
 import { useLocation } from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 
 
@@ -10,13 +11,20 @@ export default function Swipescreen({ token }) {
     const { playlist_id, name } = state;
     const [tracks, setTracks] = useState([null]);
     const [loading, setLoading] = useState(true);
-
     let artists = null;
     if(tracks[0]){
         artists = tracks.map(({track}) => track.artists);
     }
+    let navigate = useNavigate();
 
     useEffect(() => {
+        async function getToken() {
+            const response = await fetch('http://localhost:8000/auth/token');
+            const json = await response.json();
+            if (!json.access_token) {
+                navigate('/');
+            }
+        };
         async function getTracks(playlist_id) {
             const response = await fetch('http://localhost:8000/tracks?' + new URLSearchParams({
                 playlist_id: playlist_id,
@@ -25,6 +33,7 @@ export default function Swipescreen({ token }) {
             setTracks(json);
             setLoading(false);
         }
+        getToken();
         getTracks(playlist_id);
 
     }, []);

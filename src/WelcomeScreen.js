@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom'
 import Playlist from './Playlist.js'
 import TopBar from './TopBar.js'; // Adjust the import path based on your file structure
 

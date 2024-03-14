@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './WebPlayback.css';
 import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.js';
 
-const track = {
-    name: "",
-    album: {
-        images: [
-            { url: "" }
-        ]
-    },
-    artists: [
-        { name: "" }
-    ]
-}
+
 
 /**
  * 
@@ -22,45 +12,51 @@ const track = {
  * to play the playlist in the browser. 
  */
 export default function WebPlayback(props) {
+    const isMounted = useRef(true); // Ref to keep track of component mount state
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [player, setPlayer] = useState(undefined);
-    const [current_track, setTrack] = useState(track);
+    const [current_track, setTrack] = useState(null);
     const [deviceId, setDeviceId] = useState(null);
     const [gotTracks, setGotTracks] = useState(false);
     const [tracksToRemove, setTracksToRemove] = useState([]);
     const [deletionStatus, setDeletionStatus] = useState("");
     const [counter, setCounter] = useState(0);
     const num_tracks = props.track_list.length;
+    useEffect(() => {
+        // Initialize Spotify player here
+        pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused);
+
+    }, []);
 
     useEffect(() => {
-        if (player) {
-            return;
-        }
-        pre_webplayer(props, player, setPlayer, setTrack, setActive, setDeviceId, setPaused);
-    }, [props.token]);
-    // This function transfers active playback to the Spotify session in the browser
+        // Function to pause the Spotify player
+        console.log("player", player);
+        const pausePlayer = () => {
+            if (player) {
+                player.pause()
+                console.log('Playback paused');
+            }
+        };
+
+        // Add event listener for beforeunload event
+        window.addEventListener('beforeunload', pausePlayer);
+
+        // Cleanup function to remove the event listener
+        return () => {
+            window.removeEventListener('beforeunload', pausePlayer);
+            if (player) {
+                player.pause();
+            }
+        };
+    }, [player]);
+
     useEffect(() => {
         transferPlayback(props, deviceId);
     }, [deviceId])
     useEffect(() => {
         play_playlist(props, setGotTracks, setTrack, deviceId);
     }, [deviceId, props.token]);
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            if (player) {
-                player.disconnect();
-            }
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        // Cleanup function to remove event listener
-        return () => {
-            handleBeforeUnload();
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, []);
 
     const handleClick = (action) => {
         if (!player) return;
@@ -75,6 +71,7 @@ export default function WebPlayback(props) {
             case 'keep':
                 player.nextTrack();
                 setCounter(counter + 1);
+                setTrack(props.track_list[(counter + 1) % num_tracks]);
                 break;
             case 'undo':
                 player.previousTrack();
@@ -92,7 +89,9 @@ export default function WebPlayback(props) {
                 }
                 break;
             case 'toggle':
-                player.togglePlay();
+                is_paused ? player.resume() : player.pause();
+                setPaused(!is_paused);
+                break;
         }
     };
 
@@ -138,7 +137,9 @@ export default function WebPlayback(props) {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [current_track, handleClick]); // handleClick dependency is now valid
 
-    console.log("Tracks ", props.track_list);
+    console.log("is_active", is_active);
+    console.log("gotTracks", gotTracks);
+    console.log("current_track", current_track);
 
     if (!is_active || !gotTracks || !current_track) {
         return <div className="loading">Loading...</div>;
@@ -203,6 +204,8 @@ const ProgressBar = (props) => {
     let { current, total } = props;
     current > total ? current = total : null;
     let percent = (current) / total * 100;
+    percent = percent.toFixed(2); // Rounds to 2 decimal places
+
 
     const containerStyles = {
         border: 'solid',

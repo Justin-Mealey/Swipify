@@ -27,9 +27,6 @@ export const pre_webplayer = async (props, player, setPlayer, setTrack, setActiv
             const current_track = state.track_window.current_track;
             const ids = props.track_list.map((track) => track.id);
 
-            setTrack(current_track);
-            setPaused(state.paused);
-
             player.getCurrentState().then(state => {
                 (!state) ? setActive(false) : setActive(true)
             });
@@ -58,6 +55,7 @@ export const transferPlayback = async (props, deviceId) => {
     });
     console.log("second");
 }
+
 export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => {
     const track_uris = props.track_list.map(track => track.uri);
     if (deviceId) {
@@ -65,32 +63,17 @@ export const play_playlist = async (props, setGotTracks, setTrack, deviceId) => 
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${props.token}`
+                'Authorization': "Bearer " + props.token,
+                'Accept': 'application/json',
             },
             body: JSON.stringify({
                 uris: track_uris,
-                offset: { position: 0 }
-            })
+                offset: { position: 0 },
+            }),
         })
             .then(response => response.json())
             .then(data => console.log('Playing playlist:', data))
             .catch(error => console.error('Error playing playlist:', error));
-    }
-    if (deviceId) {
-        await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=false?device_id=${deviceId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${props.token}`
-            },
-            body: JSON.stringify({
-                uris: track_uris,
-                offset: { position: 0 }
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log('Playing playlist:', data))
-        .catch(error => console.error('Error playing playlist:', error));
     }
     setGotTracks(true);
     setTrack(props.track_list[0]);
