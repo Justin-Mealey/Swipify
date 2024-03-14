@@ -12,12 +12,12 @@ export default function Swipescreen({ token }) {
     const [tracks, setTracks] = useState([null]);
     const [loading, setLoading] = useState(true);
     let artists = null;
-    if (tracks[0]) {
+    if (tracks[0]) { //if tracks state has been set with playlist's tracks, get artists
         artists = tracks.map(({ track }) => track.artists);
     }
     let navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect(() => {//get and set tracks state, set loading to false so rest of code can run
         async function getToken() {
             const response = await fetch('http://localhost:8000/auth/token');
             const json = await response.json();
@@ -57,19 +57,18 @@ export default function Swipescreen({ token }) {
     );
 }
 
-//dropdown menu where a user can click on an artists and tracks will get filtered
+//dropdown menu where a user can click on an artists and tracks will get filtered by rerendering tracks state
 function ArtistDropdown({ tracks, artists, onFilter }) {
 
-    //const [selectedArtist, setSelectedArtist] = useState(null);
     function handleClick() { //only called if tracks and artist are valid
-        //setSelectedArtist(artist)
-        let id = document.getElementById("dropdown").value
+        let id = document.getElementById("dropdown").value //clicked on artist from the dropdown
         let filtered_tracks = sort_tracks_by_artist(tracks, artists, id)
         onFilter(filtered_tracks)
     }
 
     if (artists[0] && tracks[0]) { //1st elem will either be null (false) or 1st list/object (true)
 
+        //get unique artist list
         let flattened_artists = [].concat(...artists); //now just one long list of artist objects
 
         let seen_ids = [];
@@ -82,7 +81,9 @@ function ArtistDropdown({ tracks, artists, onFilter }) {
                 seen_ids.push(artist.id);
             }
         }
+        //end of get unique artist list
 
+        //map each unique artist to item in dropdown menu
         return (<>
             <select className="artistlist" id="dropdown" onInput={() => handleClick()}>
                 {unique_artists.map((artist) =>

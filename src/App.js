@@ -7,7 +7,7 @@ import { Routes, Route } from 'react-router-dom'
 export default function App() {
     const [token, setToken] = useState('');
 
-    useEffect(() => {
+    useEffect(() => { //get our token allowing access to the Spotify API
 
         async function getToken() {
             const response = await fetch('http://localhost:8000/auth/token');
@@ -20,12 +20,7 @@ export default function App() {
 
     }, []);
 
-    //check for token
-    //if token
-    //useNavigate(login page)
-
-    //also check for every instance of fetch('http://localhost:8000/auth/token');
-
+    //app has two main pages, one to pick playlist, one to swipe on it
     return (
         <div className="App">
             <Routes>

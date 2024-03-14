@@ -7,7 +7,7 @@ export default function Home(){
 
     useEffect(() => {
 
-        async function getToken() {
+        async function getToken() { //get our token allowing access to the Spotify API
             const response = await fetch('http://localhost:8000/auth/token');
             console.log(response);
             const json = await response.json();
@@ -19,7 +19,7 @@ export default function Home(){
   }, []);
 
 
-    return (
+    return ( //display correct screen based on if we have successfully grabbed token yet
         <>
         { (token === '') ? <Login/> :
             <>
