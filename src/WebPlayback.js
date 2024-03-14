@@ -13,7 +13,6 @@ import TopBar from './TopBar.js'
  * to play the playlist in the browser. 
  */
 export default function WebPlayback(props) {
-    const isMounted = useRef(true); // Ref to keep track of component mount state
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [player, setPlayer] = useState(undefined);
