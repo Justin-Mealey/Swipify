@@ -1,8 +1,9 @@
 # Setup
 
+github link: https://github.com/christiandsol/Swipify
+
 ```
 git clone https://github.com/christiandsol/Swipify
-
 ```
 From here, go into the directory that you cloned. 
 For code to be able to run, you will need to run npm install and create a .env file in your root directory with:
@@ -25,3 +26,31 @@ ACCESS_TOKEN = ''
 REFRESH_TOKEN = '' 
 USER_ID = null
 
+
+After including all these files, run npm install
+```
+npm install
+```
+Following, you can do
+```
+npm run dev
+```
+to run the backend and the frontend simultaneously
+
+If you get an error with an explanation like:
+(probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a
+'*mis' file, or a '*.is' file where the package.ison
+contains !"type":
+"module!').
+Then you must ensure that you have the latest version of react installed, run:
+```
+npm install react@latest react-dom@latest
+```
+
+The spotify webplayer playback SDK from the spotify api has many issues including: 
+- Faultiness if used in the non-latest version of google chrome
+- Faultiness if using a public or non-private network
+- Faultiness if having too many requests to the spotify api, when working with the 
+    application, if you exceed a certain amount of requests by filtering by artists, 
+    choosing a song from the dropdown, the webplayer can be faulty, if you don't spam the 
+    page everything should work fine
