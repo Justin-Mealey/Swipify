@@ -225,20 +225,6 @@ async function get_tracks_from_playlist(playlist_id){
     return tracks;
 }
 
-async function get_tracks_and_artists_from_playlist(playlist_id){
-    // Function to return an object with 
-    // 1. a list of tracks (track id, name, artist id, and album name as a minimum) and 
-    // 2. a list of object artists that has ids and name at a minimum
-    // 3. This function is intended to be called from the front end to populate the swiping page with tracks, and show a list of the artists to sort by
-
-
-    let tracks = await get_tracks_from_playlist(playlist_id);
-    let artists = tracks.map(({track}) => track.artists); //artists[0] is a list of artist objects from tracks[0]
-
-    // console.log(unique_artists.map((artist) => artist.name));
-    return {"tracks" : tracks, "artists" : artists}
-}
-
 async function remove_tracks_from_playlist(playlist_id, trackids_to_remove){
     // Takes in an array of track_ids, and the playlist_id the track is meant to be removed from. 
     // Should be called with a list of track_ids from the front end, once the user confirms removal of the tracks. 
@@ -320,50 +306,3 @@ async function remove_tracks_from_playlist(playlist_id, trackids_to_remove){
 
 
 */
-
-function sort_tracks_by_artist(tracks, artist_id){
-    // Given an array of track objects, puts all songs with artist of artist_id at the beginning of the array.
-    // Returns the reordered list of tracks. 
-
-    /* Implementation: say tracks 4, 7, and 18 have the artist
-       tracks[0] <-> tracks[4], tracks[1] <-> tracks[7], tracks[2] <-> tracks[18]
-    */
-
-    let artists = tracks.map(({track}) => track.artists);
-    let artist_ids = []
-    for(let i = 0; i < artists.length; i++){ //artists is nested array, map inner array's artists to their id's
-        let ids = artists[i].map((artist) => artist.id)
-        artist_ids.push(ids)
-    }
-    //artist_ids looks like [ [drakeid, jcoleid], [travis scottid, dababyid, ] ] for tracks 0 and 1
-
-    let frontmost_index = 0
-    for(let i = 0; i < tracks.length; i++){
-        if(artist_ids[i].includes(artist_id)){
-            let temp = tracks[frontmost_index]
-            tracks[frontmost_index] = tracks[i]
-            tracks[i] = temp
-            frontmost_index++
-        }
-    }
-    return tracks
-}
-
-function sort_tracks_by_album(tracks, album_name){
-    //same as sort_tracks_by_artist, but for an album name
-    //each track belongs to only one album, so even simpler function
-
-    let album_names = tracks.map(({track}) => track.album.name);
-    //album_names looks like [ Yeezus, Stoney (Deluxe) ] for tracks 0 and 1
-
-    let frontmost_index = 0
-    for(let i = 0; i < tracks.length; i++){
-        if(album_name === album_names[i]){
-            let temp = tracks[frontmost_index]
-            tracks[frontmost_index] = tracks[i]
-            tracks[i] = temp
-            frontmost_index++
-        }
-    }
-    return tracks
-}

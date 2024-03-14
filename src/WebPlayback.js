@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import './WebPlayback.css';
 import { pre_webplayer, transferPlayback, play_playlist } from './pre_webplayer.js';
 import Spinner from './Spinner.js';
+import TopBar from './TopBar.js'
 
 
 
@@ -163,6 +164,7 @@ export default function WebPlayback(props) {
 
     return (
         <>
+            <TopBar/>
             <div className='sidebar'>
                 <div className='deleted-tracks-list'>
                     <h2>Deleted Tracks</h2>
