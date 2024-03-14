@@ -24,9 +24,6 @@ export const pre_webplayer = async (props, player, setPlayer, setTrack, setActiv
             if (!state) {
                 return;
             }
-            const current_track = state.track_window.current_track;
-            const ids = props.track_list.map((track) => track.id);
-
             player.getCurrentState().then(state => {
                 (!state) ? setActive(false) : setActive(true)
             });

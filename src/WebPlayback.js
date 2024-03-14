@@ -137,9 +137,6 @@ export default function WebPlayback(props) {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [current_track, handleClick]); // handleClick dependency is now valid
 
-    console.log("is_active", is_active);
-    console.log("gotTracks", gotTracks);
-    console.log("current_track", current_track);
 
     if (!is_active || !gotTracks || !current_track) {
         return <div className="loading">Loading...</div>;

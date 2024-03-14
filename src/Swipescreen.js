@@ -21,6 +21,7 @@ export default function Swipescreen({ token }) {
         async function getToken() {
             const response = await fetch('http://localhost:8000/auth/token');
             const json = await response.json();
+            console.log(json.access_token);
             if (!json.access_token) {
                 navigate('/');
             }
@@ -36,7 +37,7 @@ export default function Swipescreen({ token }) {
         getToken();
         getTracks(playlist_id);
 
-    }, []);
+    }, [token]);
     if (loading) {
         return <div>Loading...</div>;
     }
