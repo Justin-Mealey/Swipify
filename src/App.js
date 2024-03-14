@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Home from './Home.js'
 import Swipescreen from './Swipescreen.js'
-import FilterScreen from './FilterScreen.js'
 import { Routes, Route } from 'react-router-dom'
 
 
@@ -31,7 +30,6 @@ export default function App() {
         <div className="App">
             <Routes>
                 <Route exact path='/' element={<Home />} />
-                <Route exact path='/filter' element={<FilterScreen />} /> )
                 <Route exact path='/swipe' element={<Swipescreen token = {token}/>} />
             </Routes>
         </div>
